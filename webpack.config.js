@@ -1,18 +1,16 @@
 const path = require("path");
-const { merge } = require("webpack-merge");
-const devConfig = require("./webpack.dev");
-const prodConfig = require("./webpack.prod");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const chalk = require("chalk");
 const webpack = require("webpack");
 
-const baseConfig = {
+module.exports = {
   target: "node",
-  entry: path.resolve(__dirname, "../src/index.js"),
+  mode: "production",
+  entry: path.resolve(__dirname, "./src/index.js"),
   output: {
     filename: "[name].js",
-    path: path.resolve(__dirname, "../dist"),
+    path: path.resolve(__dirname, "./dist"),
   },
   module: {
     //解决Critical dependency: require function is used in a way in which dependencies cannot be statically extracted的问题
@@ -62,15 +60,30 @@ const baseConfig = {
     Buffer: true,
     setImmediate: true,
   },
-  resolve: {
-    alias: {
-      src: path.resolve(__dirname, "../src"),
+  optimization: {
+    splitChunks: {
+      chunks: "initial",
+      minSize: 20000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: "~",
+      cacheGroups: {
+        default: {
+          name: "manifest",
+          chunks: "initial",
+          minChunks: 2,
+          priority: 10,
+          reuseExistingChunk: true,
+        },
+        defaultVendor: {
+          name: "vendor",
+          test: /node_modules/,
+          chunks: "initial",
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+      },
     },
-    extensions: [".js", ".json"],
   },
-};
-
-module.exports = () => {
-  const config = process.env.NODE_ENV === "production" ? prodConfig : devConfig;
-  return merge(baseConfig, config);
 };

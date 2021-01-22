@@ -15,9 +15,9 @@ const app = new Koa();
 
 // koa-compose 集成中间件
 const middleware = compose([
+  json(),
   router(),
   koaBody(),
-  json(),
   helmet(),
   koaStatic(path.resolve(__dirname, "../public")),
   cors(),

@@ -15,6 +15,7 @@ const app = new Koa();
 
 // koa-compose 集成中间件
 const middleware = compose([
+  router(),
   koaBody(),
   json(),
   helmet(),
@@ -29,7 +30,6 @@ const middleware = compose([
         : { stack, ...other };
     },
   }),
-  router(),
 ]);
 
 app.use(middleware);

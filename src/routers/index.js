@@ -1,3 +1,4 @@
-import combineRoutes from 'koa-combine-routers';
+import combineRoutes from "koa-combine-routers";
+import routerTest from "./test";
 
-export default combineRoutes();
+export default combineRoutes(routerTest);

@@ -1,7 +1,6 @@
 import Koa from "koa";
 import json from "koa-json";
 import compose from "koa-compose";
-import helmet from "helmet";
 import koaStatic from "koa-static";
 import cors from "@koa/cors";
 import path from "path";
@@ -10,18 +9,16 @@ import compress from "koa-compress";
 import router from "./routers";
 import error from "koa-json-error";
 import parameter from "koa-parameter";
+import koaJwt from "koa-jwt";
 
 const app = new Koa();
 
 // koa-compose 集成中间件
 const middleware = compose([
-  json(),
-  router(),
-  koaBody(),
-  helmet(),
-  koaStatic(path.resolve(__dirname, "../public")),
   cors(),
+  koaBody(),
   parameter(app),
+  json(),
   error({
     // 通过控制postformat,来修改输出信息,stack是错误堆栈信息,在正式环境不应该返回,所以过滤掉
     postFormat: (err, { stack, ...other }) => {
@@ -30,6 +27,9 @@ const middleware = compose([
         : { stack, ...other };
     },
   }),
+  koaJwt({ secret: "shared-secret" }).unless({ path: [/^\/login/] }),
+  router(),
+  koaStatic(path.resolve(__dirname, "../public")),
 ]);
 
 app.use(middleware);

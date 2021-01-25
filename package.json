@@ -29,6 +29,7 @@
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "helmet": "^4.4.1",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "koa-combine-routers": "^4.0.2",
@@ -36,9 +37,13 @@
     "koa-compress": "^5.0.1",
     "koa-json": "^2.0.2",
     "koa-json-error": "^3.1.2",
+    "koa-jwt": "^4.0.0",
     "koa-parameter": "^3.0.1",
     "koa-router": "^10.0.0",
     "koa-static": "^5.0.0",
+    "mongoose": "^5.11.13",
+    "nodemailer": "^6.4.17",
+    "redis": "^3.0.2",
     "svg-captcha": "^1.4.0"
   }
 }

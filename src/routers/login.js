@@ -1,7 +1,7 @@
 import KoaRouter from "koa-router";
 import publicController from "../controller/login.js";
 
-const router = new KoaRouter({ prefix: "/login" });
+const router = new KoaRouter({ prefix: "/login/api" });
 
 router.get("/captcha", publicController.getCaptcha);
 

@@ -19,6 +19,9 @@ class PublicController {
       background: "#f2f2f2",
       noise: Math.floor(Math.random() * 5),
     });
+    await Captcha.deleteMany({
+      uuid: ctx.request.query.uuid,
+    });
     const result = new Captcha({
       ...ctx.request.query,
       captcha_code: captcha.text.toLocaleLowerCase(),
@@ -42,6 +45,9 @@ class PublicController {
       },
     });
     const captchaText = svgCaptcha.create().text;
+    await Captcha.deleteMany({
+      uuid: ctx.request.body.uuid,
+    });
     const captcha = new Captcha({
       ...ctx.request.body,
       captcha_code: captchaText,

@@ -19,9 +19,9 @@ const middleware = compose([
   koaBody({
     multipart: true,
     formidable: {
-      uploadDir: path.resolve(__dirname, './public/upload'),
-      keepExtensions: true
-    }
+      uploadDir: path.resolve(__dirname, "./public/upload"),
+      keepExtensions: true,
+    },
   }),
   parameter(app),
   json(),
@@ -33,7 +33,7 @@ const middleware = compose([
         : { stack, ...other };
     },
   }),
-  router()
+  router(),
 ]);
 
 app.use(middleware);

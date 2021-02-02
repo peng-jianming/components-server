@@ -84,26 +84,28 @@ class PublicController {
         required: true,
       },
     });
-    const captchas = await Captcha.find({
+    const captcha_one = await Captcha.findOne({
       uuid: ctx.request.body.uuid,
-      captcha_code: ctx.request.body.captcha_code,
-      email: ctx.request.body.email,
     });
-    if (captchas.length !== 0) {
-      const users = await User.find({ email: ctx.request.body.email });
-      if (users.length === 0) {
-        const user = new User(ctx.request.body);
-        const result = await user.save();
-        ctx.body = {
-          code: 0,
-          data: result,
-        };
-      } else {
-        ctx.throw(422, "这个邮箱已经注册过了!,请找回或者选择新的邮箱重新注册");
-      }
-    } else {
-      ctx.throw(422, "验证码错误");
-    }
+    if (!captcha_one) ctx.throw(422, "验证码已经过期了,请重新获取!");
+    if (
+      captcha_one.email !== ctx.request.body.email ||
+      captcha_one.captcha_code !== ctx.request.body.captcha_code
+    )
+      ctx.throw(422, "输入验证码错误!");
+    const user_one = await User.findOne({ email: ctx.request.body.email });
+    if (user_one)
+      ctx.throw(422, "这个邮箱已经注册过了,请找回或者选择新的邮箱重新注册!");
+    const user_two = await User.findOne({
+      user_name: ctx.request.body.user_name,
+    });
+    if (user_two) ctx.throw(422, "这个用户名已经注册过了,请更改!");
+    const user = new User(ctx.request.body);
+    const result = await user.save();
+    ctx.body = {
+      code: 0,
+      data: result,
+    };
   }
 
   async retrieve(ctx) {
@@ -114,16 +116,13 @@ class PublicController {
       },
     });
     const user = await User.findOne(ctx.request.body);
-    if (user) {
-      const retrieveHtml = `您的Components密码为:${user.password}`;
-      sendMail("Components密码找回", ctx.request.body.email, retrieveHtml);
-      ctx.body = {
-        code: 0,
-        data: "success",
-      };
-    } else {
-      ctx.throw(422, "该邮箱还未注册过账号");
-    }
+    if (!user) ctx.throw(422, "该邮箱还未注册过账号");
+    const retrieveHtml = `您的Components密码为:${user.password}`;
+    sendMail("Components密码找回", ctx.request.body.email, retrieveHtml);
+    ctx.body = {
+      code: 0,
+      data: "success",
+    };
   }
 
   async login(ctx) {
@@ -145,37 +144,33 @@ class PublicController {
         required: true,
       },
     });
-    const captcha = await Captcha.findOne({
+    const captcha_one = await Captcha.findOne({
       uuid: ctx.request.body.uuid,
-      captcha_code: ctx.request.body.captcha_code.toLocaleLowerCase(),
     });
-    if (captcha) {
-      const user = await User.findOne({
-        email: ctx.request.body.email,
-        password: ctx.request.body.password,
-      });
-      if (user) {
-        const data = josnwebtoken.sign(
-          {
-            user_name: user.user_name,
-            id: user._id,
-            email: user.email,
-          },
-          "shared-secret",
-          { expiresIn: "1d" }
-        );
-        ctx.body = {
-          code: 0,
-          data: {
-            token: data,
-          },
-        };
-      } else {
-        ctx.throw(422, "邮箱或者密码错误!");
-      }
-    } else {
-      ctx.throw(422, "验证码错误!");
-    }
+    if (!captcha_one) ctx.throw(422, "验证码已经过期了!");
+    if (captcha_one.captcha_code !== ctx.request.body.captcha_code)
+      ctx.throw(422, "输入验证码错误!");
+    const user = await User.findOne({
+      email: ctx.request.body.email,
+      password: ctx.request.body.password,
+    });
+    if (!user) ctx.throw(422, "邮箱或者密码错误!");
+    const data = josnwebtoken.sign(
+      {
+        user_name: user.user_name,
+        id: user._id,
+        email: user.email,
+        post: user.post,
+      },
+      "shared-secret",
+      { expiresIn: "1d" }
+    );
+    ctx.body = {
+      code: 0,
+      data: {
+        token: data,
+      },
+    };
   }
 }
 

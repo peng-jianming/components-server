@@ -7,10 +7,12 @@ const auth = koaJwt({ secret: "shared-secret" });
 
 router.get("/", auth, UserController.getUser);
 
-router.post('/avatar', UserController.uploadAvatar);
+router.post("/avatar", UserController.uploadAvatar);
 
-router.put('/', auth, UserController.updateUser);
+router.put("/", auth, UserController.updateUser);
 
-router.patch('/changePassword', auth, UserController.changePassword);
+router.patch("/changePassword", auth, UserController.changePassword);
+
+router.get('/search',UserController.searchUserName)
 
 export default router;

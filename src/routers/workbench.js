@@ -1,6 +1,6 @@
 import KorRouter from "koa-router";
 
-const router = new KorRouter({prefix: '/workbench/api'});
+const router = new KorRouter({ prefix: "/workbench/api" });
 
 router.get("/test", (ctx) => {
   ctx.body = {

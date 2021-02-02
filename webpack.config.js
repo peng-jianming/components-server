@@ -2,6 +2,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 const chalk = require("chalk");
+const nodeExcternals = require('webpack-node-externals');
 const webpack = require("webpack");
 
 module.exports = {
@@ -28,6 +29,7 @@ module.exports = {
       },
     ],
   },
+  externals: [nodeExcternals()],
   plugins: [
     new CleanWebpackPlugin({}),
     new ProgressBarPlugin({

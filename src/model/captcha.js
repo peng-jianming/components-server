@@ -9,4 +9,4 @@ const captchaSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, index: { expires: 300 } },
 });
 
-export default mongoose.model("captcha", captchaSchema);
+export default mongoose.model("Captcha", captchaSchema);

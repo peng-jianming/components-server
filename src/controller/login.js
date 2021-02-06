@@ -148,7 +148,7 @@ class PublicController {
       uuid: ctx.request.body.uuid,
     });
     if (!captcha_one) ctx.throw(422, "验证码已经过期了!");
-    if (captcha_one.captcha_code !== ctx.request.body.captcha_code)
+    if (captcha_one.captcha_code !== ctx.request.body.captcha_code.toLocaleLowerCase())
       ctx.throw(422, "输入验证码错误!");
     const user = await User.findOne({
       email: ctx.request.body.email,

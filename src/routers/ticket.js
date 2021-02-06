@@ -16,4 +16,6 @@ router.get("/list", TicketListController.ticketList);
 // 工单详情
 router.get('/:id', TicketDetailController.ticketDetail);
 
+router.post('/', auth, TicketDetailController.handleTicket);
+
 export default router;

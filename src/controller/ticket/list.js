@@ -22,7 +22,10 @@ class TicketListController {
       current_handler: ctx.state.user.user_name,
       responsible: ctx.state.user.user_name,
       operators: ctx.state.user.user_name,
-      post: ctx.state.user.post
+      post: ctx.state.user.post,
+      chat_record: [{
+        text: `${ctx.state.user.user_name}创建了工单`
+      }]
     })
     const result = await ticket.save()
     ctx.body = {
@@ -47,7 +50,7 @@ class TicketListController {
       page: undefined,
       'problem_heppen_time[]': undefined
     })
-    const list = await Ticket.find(query).limit(limit).skip(page)
+    const list = await Ticket.find(query).limit(limit).skip(page).sort('-create_time')
     const count = await Ticket.find(query).count()
     ctx.body = {
       code: 0,

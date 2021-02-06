@@ -5,6 +5,7 @@ import FeedbackEnums from "../dependencies/enums/Feedback";
 import TicketStatusEnums, {
   TicketStatus,
 } from "../dependencies/enums/TicketStatus";
+import ChatTypeEnums from "../dependencies/enums/ChatType";
 
 const ticketSchema = new mongoose.Schema({
   __v: { select: false },
@@ -37,7 +38,7 @@ const ticketSchema = new mongoose.Schema({
   copy_to_people: String,
   ticket_status: {
     type: Number,
-    enum: TicketStatusEnums.map((id) => id),
+    enum: TicketStatusEnums.map(({ id }) => id),
     default: TicketStatus.PENDING,
   },
   // 当前处理人
@@ -48,5 +49,21 @@ const ticketSchema = new mongoose.Schema({
   operators: String,
   // 当前岗位
   post: Number,
+  chat_record: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: "600fb0f2205465003081b582",
+      },
+      current_handler: String,
+      type: { type: Number, enum: ChatTypeEnums.map(({ id }) => id) },
+      text: String,
+      time: {
+        type: String,
+        default: Date.now,
+      },
+    },
+  ],
 });
 export default mongoose.model("Ticket", ticketSchema);

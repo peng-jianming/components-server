@@ -46,6 +46,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.11.13",
     "nodemailer": "^6.4.17",
-    "svg-captcha": "^1.4.0"
+    "svg-captcha": "^1.4.0",
+    "ws": "^7.4.3"
   }
 }

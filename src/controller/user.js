@@ -18,7 +18,7 @@ class UserController {
       data: {
         url: `${
           process.env.NODE_ENV === "development"
-            ? ctx.origin
+            ? 'http://localhost:3000'
             : "http://8.129.90.25:3000"
         }/upload/${basename}`,
       },

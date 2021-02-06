@@ -1,4 +1,3 @@
-import { model } from "mongoose";
 import mongoose from "../config/mongoConfig";
 
 const captchaSchema = new mongoose.Schema({

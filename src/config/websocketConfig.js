@@ -1,4 +1,6 @@
 import WebSocket from "ws";
+import fs from "fs";
+import https from "https";
 import jwt from "jsonwebtoken";
 
 class Socket {
@@ -12,7 +14,11 @@ class Socket {
   }
 
   init() {
-    this.wss = new WebSocket.Server(this.config);
+    const server = https.createServer({
+      cert: fs.readFileSync("./httpsConfig/5163307_www.pengjianming.top.pem"),
+      key: fs.readFileSync("./httpsConfig/5163307_www.pengjianming.top.key"),
+    });
+    this.wss = new WebSocket.Server({ server });
     this.wss.on("connection", (ws) => {
       // 连接成功,开启心跳检测
       ws.isAlive = true;
@@ -21,6 +27,7 @@ class Socket {
       ws.on("message", (msg) => this.message(ws, msg));
       ws.on("close", () => this.close(ws, this.wss));
     });
+    server.listen(8080);
   }
 
   message(ws, msg) {

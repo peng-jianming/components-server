@@ -15,8 +15,12 @@ class Socket {
 
   init() {
     const server = https.createServer({
-      cert: fs.readFileSync("./httpsConfig/5163307_www.pengjianming.top.pem"),
-      key: fs.readFileSync("./httpsConfig/5163307_www.pengjianming.top.key"),
+      cert: fs.readFileSync(
+        __dirname + "/httpsConfig/5163307_www.pengjianming.top.pem"
+      ),
+      key: fs.readFileSync(
+        __dirname + "/httpsConfig/5163307_www.pengjianming.top.key"
+      ),
     });
     this.wss = new WebSocket.Server({ server });
     this.wss.on("connection", (ws) => {

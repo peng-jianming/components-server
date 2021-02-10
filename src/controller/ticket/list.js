@@ -1,10 +1,10 @@
-import { pickBy } from 'lodash'
-import Ticket from '../../model/ticket'
-import { Post } from '../../dependencies/enums/Post'
+import { pickBy } from 'lodash';
+import Ticket from '../../model/ticket';
+import { Post } from '../../dependencies/enums/Post';
 
 class TicketListController {
   // 创建工单
-  async createTicket (ctx) {
+  async createTicket(ctx) {
     // ctx.verifyParams({
     //
     // })
@@ -23,21 +23,23 @@ class TicketListController {
       responsible: ctx.state.user.user_name,
       operators: ctx.state.user.user_name,
       post: ctx.state.user.post,
-      chat_record: [{
-        text: `${ctx.state.user.user_name}创建了工单`
-      }]
-    })
-    const result = await ticket.save()
+      chat_record: [
+        {
+          text: `${ctx.state.user.user_name}创建了工单`
+        }
+      ]
+    });
+    const result = await ticket.save();
     ctx.body = {
       code: 0,
       data: result
-    }
+    };
   }
 
   // 获取工单列表
-  async ticketList (ctx) {
-    const limit = parseInt(ctx.query.limit) || 10
-    const page = ((parseInt(ctx.query.page) || 1) - 1) * limit
+  async ticketList(ctx) {
+    const limit = parseInt(ctx.query.limit) || 10;
+    const page = ((parseInt(ctx.query.page) || 1) - 1) * limit;
     const query = pickBy({
       ...ctx.query,
       problem_heppen_start_time: ctx.query.problem_heppen_start_time && {
@@ -49,17 +51,54 @@ class TicketListController {
       limit: undefined,
       page: undefined,
       'problem_heppen_time[]': undefined
-    })
-    const list = await Ticket.find(query).limit(limit).skip(page).sort('-create_time')
-    const count = await Ticket.find(query).count()
+    });
+    const list = await Ticket.find(query)
+      .limit(limit)
+      .skip(page)
+      .sort('-create_time');
+    const count = await Ticket.find(query).count();
     ctx.body = {
       code: 0,
       data: {
         total: count,
         data: list
       }
-    }
+    };
+  }
+
+  async aboutMeTicket(ctx) {
+    const limit = parseInt(ctx.query.limit) || 10;
+    const page = ((parseInt(ctx.query.page) || 1) - 1) * limit;
+    const list = await Ticket.find()
+      .or([
+        {
+          current_handler: ctx.state.user.user_name
+        },
+        {
+          responsible: ctx.state.user.user_name
+        }
+      ])
+      .limit(limit)
+      .skip(page)
+      .sort('-create_time');
+    const count = await Ticket.find()
+      .or([
+        {
+          current_handler: ctx.state.user.user_name
+        },
+        {
+          responsible: ctx.state.user.user_name
+        }
+      ])
+      .count();
+    ctx.body = {
+      code: 0,
+      data: {
+        total: count,
+        data: list
+      }
+    };
   }
 }
 
-export default new TicketListController()
+export default new TicketListController();

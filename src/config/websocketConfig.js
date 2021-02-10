@@ -1,13 +1,13 @@
-import WebSocket from "ws";
-import fs from "fs";
-import https from "https";
-import jwt from "jsonwebtoken";
+import WebSocket from 'ws';
+import fs from 'fs';
+import https from 'https';
+import jwt from 'jsonwebtoken';
 
 class Socket {
   constructor(config) {
     this.config = {
       port: 8080,
-      ...config,
+      ...config
     };
     this.wss = {};
     this.init();
@@ -16,20 +16,20 @@ class Socket {
   init() {
     const server = https.createServer({
       cert: fs.readFileSync(
-        __dirname + "/httpsConfig/5163307_www.pengjianming.top.pem"
+        __dirname + '/httpsConfig/5163307_www.pengjianming.top.pem'
       ),
       key: fs.readFileSync(
-        __dirname + "/httpsConfig/5163307_www.pengjianming.top.key"
-      ),
+        __dirname + '/httpsConfig/5163307_www.pengjianming.top.key'
+      )
     });
     this.wss = new WebSocket.Server({ server });
-    this.wss.on("connection", (ws) => {
+    this.wss.on('connection', (ws) => {
       // 连接成功,开启心跳检测
       ws.isAlive = true;
       this.heartbeat(ws);
 
-      ws.on("message", (msg) => this.message(ws, msg));
-      ws.on("close", () => this.close(ws, this.wss));
+      ws.on('message', (msg) => this.message(ws, msg));
+      ws.on('close', () => this.close(ws, this.wss));
     });
     server.listen(8080);
   }
@@ -39,14 +39,14 @@ class Socket {
     const event = {
       // 身份验证完后添加返回验证信息,并添加对应用户信息到ws上
       auth: (params) => {
-        const auth = jwt.verify(params.token, "shared-secret");
+        const auth = jwt.verify(params.token, 'shared-secret');
         if (auth) {
           ws.user = auth;
           ws.roomId = params.roomId;
         } else {
           ws.send(
             JSON.stringify({
-              event: "noAuth",
+              event: 'noAuth'
             })
           );
         }
@@ -54,7 +54,7 @@ class Socket {
       // 收到心跳,证明还活着
       heartbeat: () => {
         ws.isAlive = true;
-      },
+      }
     };
     event[data.event](data.message);
   }
@@ -68,7 +68,7 @@ class Socket {
           client.readyState === WebSocket.OPEN &&
           client.user.user_name === user_name
         ) {
-          client.send(JSON.stringify({ event: "tip", message }));
+          client.send(JSON.stringify(message));
         }
       });
   }
@@ -83,12 +83,12 @@ class Socket {
           client.roomId === roomId &&
           user_id !== client.user.id
         ) {
-          client.send(JSON.stringify({ event: "chat" }));
+          client.send(JSON.stringify({ event: 'chat' }));
         }
       });
   }
 
-  close(ws, wss) {
+  close(ws) {
     // 关闭连接时关闭对应的定时器
     clearInterval(ws.interval);
   }
@@ -100,11 +100,11 @@ class Socket {
       ws.isAlive = false;
       ws.send(
         JSON.stringify({
-          event: "heartbeat",
-          message: "ping",
+          event: 'heartbeat',
+          message: 'ping'
         })
       );
-    }, 1000);
+    }, 30000);
   }
 }
 

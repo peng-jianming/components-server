@@ -1,48 +1,54 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const ProgressBarPlugin = require("progress-bar-webpack-plugin");
-const chalk = require("chalk");
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const chalk = require('chalk');
 const nodeExcternals = require('webpack-node-externals');
-const webpack = require("webpack");
+const webpack = require('webpack');
 
 module.exports = {
-  target: "node",
-  mode: "production",
-  entry: path.resolve(__dirname, "./src/index.js"),
+  target: 'node',
+  mode: 'production',
+  entry: path.resolve(__dirname, './src/index.js'),
   output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "./dist"),
+    filename: '[name].js',
+    path: path.resolve(__dirname, './dist')
   },
   module: {
-    //解决Critical dependency: require function is used in a way in which dependencies cannot be statically extracted的问题
+    // 解决Critical dependency: require function is used in a way in which dependencies cannot be statically extracted的问题
     unknownContextCritical: false,
-    //解决the request of a dependency is an expression
+    // 解决the request of a dependency is an expression
     exprContextCritical: false,
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: [
-          "thread-loader",
-          { loader: "babel-loader", options: { cacheDirectory: true } },
-        ],
+          'thread-loader',
+          { loader: 'babel-loader', options: { cacheDirectory: true } }
+        ]
       },
-    ],
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ['thread-loader', 'eslint-loader']
+      }
+    ]
   },
   externals: [nodeExcternals()],
   plugins: [
     new CleanWebpackPlugin({}),
     new ProgressBarPlugin({
       format: `  build [:bar]  ${chalk.green.bold(
-        ":percent"
+        ':percent'
       )} (:elapsed seconds) :msg`,
-      clear: true,
+      clear: true
     }),
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: process.env.NODE_ENV,
-      },
-    }),
+      'process.env': {
+        NODE_ENV: process.env.NODE_ENV
+      }
+    })
   ],
   stats: {
     colors: true,
@@ -51,7 +57,7 @@ module.exports = {
     chunks: false,
     timings: true,
     chunkModules: false,
-    entrypoints: false,
+    entrypoints: false
   },
   node: {
     console: true,
@@ -60,32 +66,32 @@ module.exports = {
     __filename: true,
     __dirname: true,
     Buffer: true,
-    setImmediate: true,
+    setImmediate: true
   },
   optimization: {
     splitChunks: {
-      chunks: "initial",
+      chunks: 'initial',
       minSize: 20000,
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
-      automaticNameDelimiter: "~",
+      automaticNameDelimiter: '~',
       cacheGroups: {
         default: {
-          name: "manifest",
-          chunks: "initial",
+          name: 'manifest',
+          chunks: 'initial',
           minChunks: 2,
           priority: 10,
-          reuseExistingChunk: true,
+          reuseExistingChunk: true
         },
         defaultVendor: {
-          name: "vendor",
+          name: 'vendor',
           test: /node_modules/,
-          chunks: "initial",
+          chunks: 'initial',
           priority: 20,
-          reuseExistingChunk: true,
-        },
-      },
-    },
-  },
+          reuseExistingChunk: true
+        }
+      }
+    }
+  }
 };

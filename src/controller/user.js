@@ -1,12 +1,13 @@
-import path from "path";
-import User from "../model/user";
+import path from 'path';
+import User from '../model/user';
+import Message from '../model/message';
 
 class UserController {
   async getUser(ctx) {
     const user = await User.findOne({ _id: ctx.state.user.id });
     ctx.body = {
       code: 0,
-      data: user,
+      data: user
     };
   }
 
@@ -17,28 +18,28 @@ class UserController {
       code: 0,
       data: {
         url: `${
-          process.env.NODE_ENV === "development"
+          process.env.NODE_ENV === 'development'
             ? 'http://localhost:3000'
-            : "http://8.129.90.25:3000"
-        }/upload/${basename}`,
-      },
+            : 'http://8.129.90.25:3000'
+        }/upload/${basename}`
+      }
     };
   }
 
   async updateUser(ctx) {
     ctx.verifyParams({
       user_name: {
-        type: "string",
-        required: true,
+        type: 'string',
+        required: true
       },
       email: {
-        type: "string",
-        required: true,
+        type: 'string',
+        required: true
       },
       avatar: {
-        type: "string",
-        required: true,
-      },
+        type: 'string',
+        required: true
+      }
     });
     const result = await User.updateOne(
       { _id: ctx.state.user.id },
@@ -46,42 +47,74 @@ class UserController {
     );
     ctx.body = {
       code: 0,
-      data: result,
+      data: result
     };
   }
 
   async changePassword(ctx) {
     ctx.verifyParams({
       old_password: {
-        type: "string",
-        required: true,
+        type: 'string',
+        required: true
       },
       new_password: {
-        type: "string",
-        required: true,
-      },
+        type: 'string',
+        required: true
+      }
     });
     const user = await User.findOne({
       _id: ctx.state.user.id,
-      password: ctx.request.body.old_password,
+      password: ctx.request.body.old_password
     });
-    if (!user) ctx.throw(422, "原密码错误");
+    if (!user) ctx.throw(422, '原密码错误');
     const result = await User.findByIdAndUpdate(ctx.state.user.id, {
-      password: ctx.request.body.new_password,
+      password: ctx.request.body.new_password
     });
     ctx.body = {
       code: 0,
-      data: result,
+      data: result
     };
   }
 
   async searchUserName(ctx) {
     const users = await User.find({
-      user_name: new RegExp(`^${ctx.query.q}`),
+      user_name: new RegExp(`^${ctx.query.q}`)
     });
     ctx.body = {
       code: 0,
-      data: users,
+      data: users
+    };
+  }
+
+  async getMessage(ctx) {
+    const limit = parseInt(ctx.query.limit) || 10;
+    const page = ((parseInt(ctx.query.page) || 1) - 1) * limit;
+    const messages = await Message.find({
+      reception_people: { $in: ctx.state.user.user_name }
+    })
+      .limit(limit)
+      .skip(page)
+      .sort('-create_time');
+    const count = await Message.find({
+      reception_people: { $in: ctx.state.user.user_name }
+    }).count();
+    ctx.body = {
+      code: 0,
+      data: {
+        total: count,
+        data: messages
+      }
+    };
+  }
+
+  async postMessage(ctx) {
+    console.log(ctx.request.body.id);
+    await Message.findByIdAndUpdate(ctx.request.body.id, {
+      isRead: true
+    });
+    ctx.body = {
+      code: 0,
+      data: 'success'
     };
   }
 }

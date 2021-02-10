@@ -1,18 +1,22 @@
-import KoaRouter from "koa-router";
-import UserController from "../controller/user";
-import koaJwt from "koa-jwt";
-const router = new KoaRouter({ prefix: "/api/user" });
+import KoaRouter from 'koa-router';
+import UserController from '../controller/user';
+import koaJwt from 'koa-jwt';
+const router = new KoaRouter({ prefix: '/api/user' });
 
-const auth = koaJwt({ secret: "shared-secret" });
+const auth = koaJwt({ secret: 'shared-secret' });
 
-router.get("/", auth, UserController.getUser);
+router.get('/', auth, UserController.getUser);
 
-router.post("/avatar", UserController.uploadAvatar);
+router.post('/avatar', UserController.uploadAvatar);
 
-router.put("/", auth, UserController.updateUser);
+router.put('/', auth, UserController.updateUser);
 
-router.patch("/changePassword", auth, UserController.changePassword);
+router.patch('/changePassword', auth, UserController.changePassword);
 
-router.get('/search',UserController.searchUserName)
+router.get('/search', UserController.searchUserName);
+
+router.get('/message', auth, UserController.getMessage);
+
+router.patch('/message', auth, UserController.postMessage);
 
 export default router;

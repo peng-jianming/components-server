@@ -3,6 +3,16 @@ import User from '../model/user';
 import Message from '../model/message';
 
 class UserController {
+  async getAllUser(ctx) {
+    const users = await User.find({
+      $nor: [{ user_name: 'admin' }]
+    });
+    ctx.body = {
+      code: 0,
+      data: users
+    };
+  }
+
   async getUser(ctx) {
     const user = await User.findOne({ _id: ctx.state.user.id });
     ctx.body = {

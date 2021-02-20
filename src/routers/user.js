@@ -7,6 +7,8 @@ const auth = koaJwt({ secret: 'shared-secret' });
 
 router.get('/', auth, UserController.getUser);
 
+router.get('/all', auth, UserController.getAllUser);
+
 router.post('/avatar', UserController.uploadAvatar);
 
 router.put('/', auth, UserController.updateUser);

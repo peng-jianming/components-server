@@ -10,7 +10,7 @@ import error from 'koa-json-error';
 import parameter from 'koa-parameter';
 
 const app = new Koa();
-console.log(process.env.NODE_ENV, 'test');
+
 // koa-compose 集成中间件
 const middleware = compose([
   koaStatic(path.join(__dirname, '../public')),

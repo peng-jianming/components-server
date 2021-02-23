@@ -15,21 +15,27 @@ class Socket {
   }
 
   init() {
-    const server = https.createServer({
-      cert: fs.readFileSync(
-        path.resolve(
-          __dirname,
-          './httpsConfig/5163307_www.pengjianming.top.pem'
+    if (process.env.NODE_ENV === 'production') {
+      // 线上采用的是https
+      const server = https.createServer({
+        cert: fs.readFileSync(
+          path.resolve(
+            __dirname,
+            './httpsConfig/5163307_www.pengjianming.top.pem'
+          )
+        ),
+        key: fs.readFileSync(
+          path.resolve(
+            __dirname,
+            './httpsConfig/5163307_www.pengjianming.top.key'
+          )
         )
-      ),
-      key: fs.readFileSync(
-        path.resolve(
-          __dirname,
-          './httpsConfig/5163307_www.pengjianming.top.key'
-        )
-      )
-    });
-    this.wss = new WebSocket.Server({ server });
+      });
+      this.wss = new WebSocket.Server({ server });
+      server.listen(8080);
+    } else {
+      this.wss = new WebSocket.Server(this.config);
+    }
     this.wss.on('connection', (ws) => {
       // 连接成功,开启心跳检测
       ws.isAlive = true;
@@ -38,7 +44,6 @@ class Socket {
       ws.on('message', (msg) => this.message(ws, msg));
       ws.on('close', () => this.close(ws, this.wss));
     });
-    server.listen(8080);
   }
 
   message(ws, msg) {
@@ -46,11 +51,13 @@ class Socket {
     const event = {
       // 身份验证完后添加返回验证信息,并添加对应用户信息到ws上
       auth: (params) => {
-        const auth = jwt.verify(params.token, 'shared-secret');
-        if (auth) {
-          ws.user = auth;
-          ws.roomId = params.roomId;
-        } else {
+        try {
+          const auth = jwt.verify('', 'shared-secret');
+          if (auth) {
+            ws.user = auth;
+            ws.roomId = params.roomId;
+          }
+        } catch (err) {
           ws.send(
             JSON.stringify({
               event: 'noAuth'

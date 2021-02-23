@@ -15,4 +15,4 @@ EXPOSE 3000
 
 VOLUME [ "/server/public" ]
 
-CMD [ "node", "./dist/server.bundle.js" ]
+CMD [ "node", "dist/main.js" ]

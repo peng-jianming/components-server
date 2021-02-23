@@ -13,6 +13,6 @@ RUN npm run build
 
 EXPOSE 3000
 
-VOLUME [ "/app/public" ]
+VOLUME [ "/server/public" ]
 
 CMD [ "node", "dist/server.bundle.js" ]

@@ -13,8 +13,6 @@ router.post('/create', auth, TicketListController.createTicket);
 // 工单列表
 router.get('/list', TicketListController.ticketList);
 
-router.get('/me', auth, TicketListController.aboutMeTicket);
-
 // 工单详情
 router.get('/:id', TicketDetailController.ticketDetail);
 

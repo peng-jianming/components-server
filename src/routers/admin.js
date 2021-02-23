@@ -11,4 +11,6 @@ router.put('/permission/:id', permissionController.updatePermission);
 
 router.delete('/permission/:id', permissionController.deletePermission);
 
+router.patch('/permission/:userId', permissionController.updateUserPermission);
+
 export default router;

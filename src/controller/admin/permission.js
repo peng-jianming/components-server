@@ -1,4 +1,5 @@
 import Permission from '../../model/permission';
+import User from '../../model/user';
 
 class PermissionController {
   async getPermission(ctx) {
@@ -31,6 +32,16 @@ class PermissionController {
     ctx.body = {
       code: 0,
       data: 'success'
+    };
+  }
+
+  async updateUserPermission(ctx) {
+    await User.findByIdAndUpdate(ctx.params.userId, {
+      permission: ctx.request.body.permission
+    });
+    ctx.body = {
+      code: 0,
+      body: 'success'
     };
   }
 }

@@ -1,15 +1,33 @@
+import { pickBy } from 'lodash';
 import path from 'path';
 import User from '../model/user';
 import Message from '../model/message';
 
 class UserController {
   async getAllUser(ctx) {
-    const users = await User.find({
-      $nor: [{ user_name: 'admin' }]
+    const limit = parseInt(ctx.query.limit) || 10;
+    const page = ((parseInt(ctx.query.page) || 1) - 1) * limit;
+    const query = pickBy({
+      ...ctx.query,
+      limit: undefined,
+      page: undefined
     });
+    const users = await User.find({
+      ...query,
+      $nor: [{ user_name: 'admin' }]
+    })
+      .skip(page)
+      .limit(limit);
+    const count = await User.find({
+      ...query,
+      $nor: [{ user_name: 'admin' }]
+    }).count();
     ctx.body = {
       code: 0,
-      data: users
+      data: {
+        total: count,
+        data: users
+      }
     };
   }
 
@@ -118,7 +136,6 @@ class UserController {
   }
 
   async postMessage(ctx) {
-    console.log(ctx.request.body.id);
     await Message.findByIdAndUpdate(ctx.request.body.id, {
       isRead: true
     });

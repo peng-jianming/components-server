@@ -11,5 +11,8 @@ RUN npm install --registry=https://registry.npm.taobao.org
 
 EXPOSE 3000
 
+# 定参
+ENTRYPOINT ["npm", "run"]
+
 # 变参
-CMD ["npm", "run", "start"]
+CMD ["dev"]

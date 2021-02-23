@@ -11,7 +11,7 @@ RUN npm install --registry=https://registry.npm.taobao.org
 
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 3000 8080
 
 VOLUME [ "/server/public" ]
 

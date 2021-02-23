@@ -21,7 +21,7 @@ class UserController {
     const count = await User.find({
       ...query,
       $nor: [{ user_name: 'admin' }]
-    }).count();
+    }).countDocuments();
     ctx.body = {
       code: 0,
       data: {
@@ -121,7 +121,7 @@ class UserController {
       .sort('-create_time');
     const count = await Message.find({
       reception_people: { $in: ctx.state.user.user_name }
-    }).count();
+    }).countDocuments();
     ctx.body = {
       code: 0,
       data: {

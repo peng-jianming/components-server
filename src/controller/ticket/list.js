@@ -56,7 +56,7 @@ class TicketListController {
       .limit(limit)
       .skip(page)
       .sort('-create_time');
-    const count = await Ticket.find(query).count();
+    const count = await Ticket.find(query).countDocuments();
     ctx.body = {
       code: 0,
       data: {
@@ -90,7 +90,7 @@ class TicketListController {
           responsible: ctx.state.user.user_name
         }
       ])
-      .count();
+      .countDocuments();
     ctx.body = {
       code: 0,
       data: {

@@ -9,10 +9,10 @@ WORKDIR /server
 
 RUN npm install --registry=https://registry.npm.taobao.org
 
+RUN npm run build
+
 EXPOSE 3000
 
-# 定参
-ENTRYPOINT ["npm", "run"]
+VOLUME [ "/app/public" ]
 
-# 变参
-CMD ["dev"]
+CMD [ "node", "dist/server.bundle.js" ]

@@ -92,6 +92,7 @@ class TicketDetailController {
         // 拒绝结单
         case TicketStatus.REFUSE_CLOSE:
           ticket.ticket_status = TicketStatus.IN_HAND;
+          // eslint-disable-next-line no-case-declarations
           const closeApplication = ticket.chat_record.filter(
             ({ type }) => type === ChatType.CLOSE_APPLICATION
           );
@@ -114,6 +115,7 @@ class TicketDetailController {
             text: `客户代表已结单`
           });
           content = `工单状态由客户代表直接更改已结单`;
+          break;
         default:
           if (ctx.request.body.copy_to_people) {
             title = `工单${ticket.ticket_id},有内容抄送给您`;

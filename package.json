@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-    "dev": "node --exec babel-node src/index.js"
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
   "keywords": [],
   "author": "",

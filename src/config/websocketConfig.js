@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
 import fs from 'fs';
+import path from 'path';
 import https from 'https';
 import jwt from 'jsonwebtoken';
 
@@ -16,10 +17,16 @@ class Socket {
   init() {
     const server = https.createServer({
       cert: fs.readFileSync(
-        __dirname + '/httpsConfig/5163307_www.pengjianming.top.pem'
+        path.resolve(
+          __dirname,
+          './httpsConfig/5163307_www.pengjianming.top.pem'
+        )
       ),
       key: fs.readFileSync(
-        __dirname + '/httpsConfig/5163307_www.pengjianming.top.key'
+        path.resolve(
+          __dirname,
+          './httpsConfig/5163307_www.pengjianming.top.key'
+        )
       )
     });
     this.wss = new WebSocket.Server({ server });
@@ -59,21 +66,21 @@ class Socket {
     event[data.event](data.message);
   }
 
-  send(user_name, message) {
+  send(userName, message) {
     // 排除掉是多人的客户端,根据对应用户名发送消息
     [...this.wss.clients]
       .filter((client) => !client.roomId)
       .forEach((client) => {
         if (
           client.readyState === WebSocket.OPEN &&
-          client.user.user_name === user_name
+          client.user.user_name === userName
         ) {
           client.send(JSON.stringify(message));
         }
       });
   }
 
-  broadcast(roomId, user_id) {
+  broadcast(roomId, userId) {
     // 广播对应房间号的,排除自己
     [...this.wss.clients]
       .filter((client) => client.roomId)
@@ -81,7 +88,7 @@ class Socket {
         if (
           client.readyState === WebSocket.OPEN &&
           client.roomId === roomId &&
-          user_id !== client.user.id
+          userId !== client.user.id
         ) {
           client.send(JSON.stringify({ event: 'chat' }));
         }

@@ -46,20 +46,16 @@ class UserController {
       code: 0,
       data: {
         url: `${
-          process.env.NODE_ENV === 'development'
-            ? 'http://localhost:3000'
-            : 'http://8.129.90.25:3000'
-        }/upload/${basename}`
+          process.env.NODE_ENV === 'production'
+            ? 'http://8.129.90.25:3000'
+            : 'http://localhost:3000'
+        }/${basename}`
       }
     };
   }
 
   async updateUser(ctx) {
     ctx.verifyParams({
-      user_name: {
-        type: 'string',
-        required: true
-      },
       email: {
         type: 'string',
         required: true

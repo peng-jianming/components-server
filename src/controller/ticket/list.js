@@ -1,5 +1,6 @@
 import { pickBy } from 'lodash';
 import Ticket from '../../model/ticket';
+import { ChatType } from '../../dependencies/enums/ChatType';
 import { Post } from '../../dependencies/enums/Post';
 
 class TicketListController {
@@ -26,6 +27,12 @@ class TicketListController {
       chat_record: [
         {
           text: `${ctx.state.user.user_name}创建了工单`
+        },
+        {
+          user: ctx.state.user.id,
+          current_handler: ctx.state.user.user_name,
+          type: ChatType.CHAT,
+          text: ctx.request.body.description
         }
       ]
     });

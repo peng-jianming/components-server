@@ -90,7 +90,12 @@ class TicketListController {
   async aboutMeTicket(ctx) {
     const limit = parseInt(ctx.query.limit) || 10;
     const page = ((parseInt(ctx.query.page) || 1) - 1) * limit;
-    const list = await Ticket.find()
+    const query = pickBy({
+      ...ctx.query,
+      limit: undefined,
+      page: undefined
+    });
+    const list = await Ticket.find(query)
       .or([
         {
           current_handler: ctx.state.user.user_name
@@ -102,7 +107,7 @@ class TicketListController {
       .limit(limit)
       .skip(page)
       .sort('-create_time');
-    const count = await Ticket.find()
+    const count = await Ticket.find(query)
       .or([
         {
           current_handler: ctx.state.user.user_name

@@ -3,6 +3,7 @@ import User from '../model/user';
 import Captcha from '../model/captcha';
 import sendMail from '../config/mailConfig';
 import josnwebtoken from 'jsonwebtoken';
+import { Boolean } from '../dependencies/enums/Boolean';
 
 class PublicController {
   async getCaptcha(ctx) {
@@ -158,6 +159,8 @@ class PublicController {
       password: ctx.request.body.password
     });
     if (!user) ctx.throw(422, '邮箱或者密码错误!');
+    if (user.activate === Boolean.FALSE)
+      ctx.throw(422, '账号未激活,请激活后使用!');
     const data = josnwebtoken.sign(
       {
         user_name: user.user_name,

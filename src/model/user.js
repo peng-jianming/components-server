@@ -16,8 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   post: {
     type: Number,
-    enum: PostEnums.map(({ id }) => id),
-    default: Post.RESPONSIBLE
+    enum: PostEnums.map(({ id }) => id)
   },
   activate: {
     type: Number,

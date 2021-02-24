@@ -143,7 +143,7 @@ class TicketDetailController {
       ]).filter(
         // 抄送人包含自己就抄送给自己,否则不给自己抄送
         (name) =>
-          copyToPeople.include(ctx.state.user.user_name) ||
+          copyToPeople.includes(ctx.state.user.user_name) ||
           name !== ctx.state.user.user_name
       );
       const message = new Message({

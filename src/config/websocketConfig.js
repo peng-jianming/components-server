@@ -52,7 +52,7 @@ class Socket {
       // 身份验证完后添加返回验证信息,并添加对应用户信息到ws上
       auth: (params) => {
         try {
-          const auth = jwt.verify('', 'shared-secret');
+          const auth = jwt.verify(params.token, 'shared-secret');
           if (auth) {
             ws.user = auth;
             ws.roomId = params.roomId;

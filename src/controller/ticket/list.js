@@ -2,19 +2,12 @@ import { pickBy } from 'lodash';
 import Ticket from '../../model/ticket';
 import { ChatType } from '../../dependencies/enums/ChatType';
 import { Post } from '../../dependencies/enums/Post';
+import sw from '../../config/websocketConfig';
+import Message from '../../model/message';
 
 class TicketListController {
   // 创建工单
   async createTicket(ctx) {
-    // ctx.verifyParams({
-    //
-    // })
-    // 抄送人传过来的是字符串,需要自己分割查询
-    // const users = await Promise.all(
-    //   ctx.request.body.copy_to_people.split(";").map((name) => {
-    //     return User.findOne({ user_name: name });
-    //   })
-    // );
     if (ctx.state.user.post !== Post.RESPONSIBLE)
       ctx.throw(413, '只有客户代表才能建单');
     const ticket = new Ticket({
@@ -37,6 +30,27 @@ class TicketListController {
       ]
     });
     const result = await ticket.save();
+    if (ticket.copy_to_people) {
+      const title = `工单${ticket.ticket_id}创建了`;
+      const content = `${ctx.state.user.user_name}在创建工单时,抄送给您`;
+      const copyToPeople = ticket.copy_to_people.split(';');
+      const message = new Message({
+        title,
+        content,
+        reception_people: copyToPeople
+      });
+      await message.save();
+      copyToPeople.forEach((userName) =>
+        sw.send(userName, {
+          event: 'tip',
+          data: {
+            id: message._id,
+            title,
+            content: `${ctx.state.user.user_name}在创建工单时,抄送给您`
+          }
+        })
+      );
+    }
     ctx.body = {
       code: 0,
       data: result

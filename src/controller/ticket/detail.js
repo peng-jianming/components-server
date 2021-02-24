@@ -131,22 +131,29 @@ class TicketDetailController {
         text: ctx.request.body.reply
       });
     await ticket.save();
-    // 处理中没有content,不需要通知
+    // 没有赋值content(只有处理中聊天,并没有抄送人的情况下),则不通知
     if (content) {
-      const copyToPeople = uniq([
-        ...(ctx.request.body.copy_to_people
-          ? ctx.request.body.copy_to_people.split(';')
-          : []),
+      const copyToPeople = ctx.request.body.copy_to_people
+        ? ctx.request.body.copy_to_people.split(';')
+        : [];
+      const peoples = uniq([
+        ...copyToPeople,
         ticket.current_handler,
         ticket.responsible
-      ]).filter((name) => name !== ctx.state.user.user_name);
+      ]).filter(
+        // 抄送人包含自己就抄送给自己,否则不给自己抄送
+        (name) =>
+          copyToPeople.include(ctx.state.user.user_name) ||
+          name !== ctx.state.user.user_name
+      );
       const message = new Message({
         title,
         content,
-        reception_people: copyToPeople
+        reception_people: peoples
       });
       await message.save();
-      copyToPeople.forEach((userName) =>
+      // 抄送通知
+      peoples.forEach((userName) =>
         sw.send(userName, {
           event: 'tip',
           data: {

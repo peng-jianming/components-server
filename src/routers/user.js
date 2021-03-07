@@ -9,6 +9,8 @@ router.get('/', auth, UserController.getUser);
 
 router.get('/all', auth, UserController.getAllUser);
 
+router.patch('/all', auth, UserController.patchAllUser);
+
 router.post('/avatar', UserController.uploadAvatar);
 
 router.put('/', auth, UserController.updateUser);

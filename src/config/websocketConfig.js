@@ -94,8 +94,8 @@ class Socket {
       .forEach((client) => {
         if (
           client.readyState === WebSocket.OPEN &&
-          client.roomId === roomId &&
-          userId !== client.user.id
+          client.roomId === roomId
+          // userId !== client.user.id
         ) {
           client.send(JSON.stringify({ event: 'chat' }));
         }

@@ -23,6 +23,11 @@ class TicketDetailController {
     const ticket = await Ticket.findOne({
       ticket_id: ctx.request.body.ticket_id
     });
+    if (
+      ctx.request.body.ticket_status &&
+      ctx.request.body.current_ticket_status !== ticket.ticket_status
+    )
+      ctx.throw(422, '该工单当前状态已被改变,请刷新页面后重试');
     let title =
       ctx.request.body.action === Action.TRANSFER &&
       !(
@@ -169,6 +174,16 @@ class TicketDetailController {
       data: 'success'
     };
     sw.broadcast(ticket.ticket_id, ctx.state.user.id);
+  }
+
+  async getTicketChatRecord(ctx) {
+    const ticket = await Ticket.findOne({
+      ticket_id: ctx.request.params.id
+    }).populate('chat_record.user');
+    ctx.body = {
+      code: 0,
+      data: ticket.chat_record
+    };
   }
 }
 

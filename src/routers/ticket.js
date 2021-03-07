@@ -18,4 +18,6 @@ router.get('/:id', TicketDetailController.ticketDetail);
 
 router.post('/', auth, TicketDetailController.handleTicket);
 
+router.get('/:id/chatRecord', auth, TicketDetailController.getTicketChatRecord);
+
 export default router;

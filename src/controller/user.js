@@ -31,6 +31,14 @@ class UserController {
     };
   }
 
+  async patchAllUser(ctx) {
+    await User.findByIdAndUpdate(ctx.request.body._id, ctx.request.body);
+    ctx.body = {
+      code: 0,
+      data: 'success'
+    };
+  }
+
   async getUser(ctx) {
     const user = await User.findOne({ _id: ctx.state.user.id });
     ctx.body = {

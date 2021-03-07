@@ -12,7 +12,9 @@ class TicketDetailController {
   async ticketDetail(ctx) {
     const ticket = await Ticket.findOne({
       ticket_id: ctx.request.params.id
-    }).populate('chat_record.user');
+    })
+      .populate('chat_record.user')
+      .select('-chat_record');
     ctx.body = {
       code: 0,
       data: ticket

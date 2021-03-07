@@ -76,7 +76,8 @@ class TicketListController {
     const list = await Ticket.find(query)
       .limit(limit)
       .skip(page)
-      .sort('-create_time');
+      .sort('-create_time')
+      .select('-chat_record');
     const count = await Ticket.find(query).countDocuments();
     ctx.body = {
       code: 0,
@@ -106,7 +107,8 @@ class TicketListController {
       ])
       .limit(limit)
       .skip(page)
-      .sort('-create_time');
+      .sort('-create_time')
+      .select('-chat_record');
     const count = await Ticket.find(query)
       .or([
         {

@@ -55,8 +55,8 @@ class UserController {
       data: {
         url: `${
           process.env.NODE_ENV === 'production'
-            ? 'https://8.129.90.25:3000'
-            : 'http://localhost:3000'
+            ? 'https://8.129.90.25:3000/upload'
+            : 'http://localhost:3000/upload'
         }/${basename}`
       }
     };

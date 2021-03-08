@@ -92,7 +92,8 @@ class PublicController {
     if (!captchaOne) ctx.throw(400, '验证码已经过期了,请重新获取!');
     if (
       captchaOne.email !== ctx.request.body.email ||
-      captchaOne.captcha_code !== ctx.request.body.captcha_code
+      captchaOne.captcha_code.toLocaleLowerCase() !==
+        ctx.request.body.captcha_code
     )
       ctx.throw(400, '输入验证码错误!');
     const userOne = await User.findOne({ email: ctx.request.body.email });
@@ -107,7 +108,7 @@ class PublicController {
     const codes = [];
     permission.forEach(({ children }) => {
       children.forEach(({ children }) => {
-        children.forEach(({ item }) => codes.push(item.permission_code));
+        children.forEach((item) => codes.push(item.permission_code));
       });
     });
     const user = new User({

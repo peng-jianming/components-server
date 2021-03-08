@@ -107,7 +107,7 @@ class PublicController {
     const codes = [];
     permission.forEach(({ children }) => {
       children.forEach(({ children }) => {
-        children.forEach(({ permission_code }) => codes.push(permission_code));
+        children.forEach(({ item }) => codes.push(item.permission_code));
       });
     });
     const user = new User({

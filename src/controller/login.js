@@ -89,19 +89,19 @@ class PublicController {
     const captchaOne = await Captcha.findOne({
       uuid: ctx.request.body.uuid
     });
-    if (!captchaOne) ctx.throw(422, '验证码已经过期了,请重新获取!');
+    if (!captchaOne) ctx.throw(400, '验证码已经过期了,请重新获取!');
     if (
       captchaOne.email !== ctx.request.body.email ||
       captchaOne.captcha_code !== ctx.request.body.captcha_code
     )
-      ctx.throw(422, '输入验证码错误!');
+      ctx.throw(400, '输入验证码错误!');
     const userOne = await User.findOne({ email: ctx.request.body.email });
     if (userOne)
-      ctx.throw(422, '这个邮箱已经注册过了,请找回或者选择新的邮箱重新注册!');
+      ctx.throw(400, '这个邮箱已经注册过了,请找回或者选择新的邮箱重新注册!');
     const userTwo = await User.findOne({
       user_name: ctx.request.body.user_name
     });
-    if (userTwo) ctx.throw(422, '这个用户名已经注册过了,请更改!');
+    if (userTwo) ctx.throw(400, '这个用户名已经注册过了,请更改!');
     // 默认给目前所有权限
     const permission = await Permission.find();
     const codes = [];
@@ -129,7 +129,7 @@ class PublicController {
       }
     });
     const user = await User.findOne(ctx.request.body);
-    if (!user) ctx.throw(422, '该邮箱还未注册过账号');
+    if (!user) ctx.throw(400, '该邮箱还未注册过账号');
     const retrieveHtml = `您的Components密码为:${user.password}`;
     sendMail('Components密码找回', ctx.request.body.email, retrieveHtml);
     ctx.body = {
@@ -160,19 +160,19 @@ class PublicController {
     const captchaOne = await Captcha.findOne({
       uuid: ctx.request.body.uuid
     });
-    if (!captchaOne) ctx.throw(422, '验证码已经过期了!');
+    if (!captchaOne) ctx.throw(400, '验证码已经过期了!');
     if (
       captchaOne.captcha_code !==
       ctx.request.body.captcha_code.toLocaleLowerCase()
     )
-      ctx.throw(422, '输入验证码错误!');
+      ctx.throw(400, '输入验证码错误!');
     const user = await User.findOne({
       email: ctx.request.body.email,
       password: ctx.request.body.password
     });
-    if (!user) ctx.throw(422, '邮箱或者密码错误!');
+    if (!user) ctx.throw(400, '邮箱或者密码错误!');
     if (user.activate === Boolean.FALSE)
-      ctx.throw(422, '账号未激活,请激活后使用!');
+      ctx.throw(400, '账号未激活,请激活后使用!');
     const data = josnwebtoken.sign(
       {
         user_name: user.user_name,

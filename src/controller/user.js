@@ -98,7 +98,7 @@ class UserController {
       _id: ctx.state.user.id,
       password: ctx.request.body.old_password
     });
-    if (!user) ctx.throw(422, '原密码错误');
+    if (!user) ctx.throw(400, '原密码错误');
     const result = await User.findByIdAndUpdate(ctx.state.user.id, {
       password: ctx.request.body.new_password
     });

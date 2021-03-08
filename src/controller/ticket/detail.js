@@ -29,7 +29,7 @@ class TicketDetailController {
       ctx.request.body.ticket_status &&
       ctx.request.body.current_ticket_status !== ticket.ticket_status
     )
-      ctx.throw(422, '该工单当前状态已被改变,请刷新页面后重试');
+      ctx.throw(400, '该工单当前状态已被改变,请刷新页面后重试');
     let title =
       ctx.request.body.action === Action.TRANSFER &&
       !(
@@ -45,7 +45,7 @@ class TicketDetailController {
         user_name: ctx.request.body.processor
       });
       if (user.post !== ctx.request.body.post)
-        ctx.throw(422, '所转处理人和岗位不匹配');
+        ctx.throw(400, '所转处理人和岗位不匹配');
       // 待处理转给运维特殊处理,进入下一状态处理中
       if (
         ticket.ticket_status === TicketStatus.PENDING &&

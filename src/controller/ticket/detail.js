@@ -26,7 +26,8 @@ class TicketDetailController {
       ticket_id: ctx.request.body.ticket_id
     });
     if (
-      ctx.request.body.ticket_status &&
+      (ctx.request.body.action === Action.TRANSFER ||
+        ctx.request.body.ticket_status) &&
       ctx.request.body.current_ticket_status !== ticket.ticket_status
     )
       ctx.throw(400, '该工单当前状态已被改变,请刷新页面后重试');

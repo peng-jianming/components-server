@@ -1,15 +1,24 @@
 import { pickBy } from 'lodash';
 import Ticket from '../../model/ticket';
+import User from '../../model/user';
 import { ChatType } from '../../dependencies/enums/ChatType';
 import { Post } from '../../dependencies/enums/Post';
 import sw from '../../config/websocketConfig';
 import Message from '../../model/message';
+import { TicketType } from '../../dependencies/enums/TicketType';
+import { CREATE_TICKET_CREATE_A } from '../../dependencies/permissionCode';
 
 class TicketListController {
   // 创建工单
   async createTicket(ctx) {
     if (ctx.state.user.post !== Post.RESPONSIBLE)
-      ctx.throw(413, '只有客户代表才能建单');
+      ctx.throw(403, '只有客户代表才能建单');
+    const user = await User.findById(ctx.state.user.id);
+    if (
+      ctx.request.body.ticket_type === TicketType.A &&
+      !user.permission.includes(CREATE_TICKET_CREATE_A)
+    )
+      ctx.throw(403, '您没有创建A类型工单的权限');
     const ticket = new Ticket({
       ...ctx.request.body,
       create_name: ctx.state.user.user_name,

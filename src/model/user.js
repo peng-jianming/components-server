@@ -16,11 +16,12 @@ const userSchema = new mongoose.Schema({
   },
   post: {
     type: Number,
+    default: Post.OPERATION,
     enum: PostEnums.map(({ id }) => id)
   },
   activate: {
     type: Number,
-    default: Boolean.FALSE,
+    default: Boolean.TRUE,
     enum: BooleanEnums.map(({ id }) => id)
   },
   permission: [{ type: String }]

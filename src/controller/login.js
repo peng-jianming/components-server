@@ -1,6 +1,7 @@
 import svgCaptcha from 'svg-captcha';
 import User from '../model/user';
 import Captcha from '../model/captcha';
+import Permission from '../model/permission';
 import sendMail from '../config/mailConfig';
 import josnwebtoken from 'jsonwebtoken';
 import { Boolean } from '../dependencies/enums/Boolean';
@@ -101,7 +102,18 @@ class PublicController {
       user_name: ctx.request.body.user_name
     });
     if (userTwo) ctx.throw(422, '这个用户名已经注册过了,请更改!');
-    const user = new User(ctx.request.body);
+    // 默认给目前所有权限
+    const permission = await Permission.find();
+    const codes = [];
+    permission.forEach(({ children }) => {
+      children.forEach(({ children }) => {
+        children.forEach(({ permission_code }) => codes.push(permission_code));
+      });
+    });
+    const user = new User({
+      ...ctx.request.body,
+      permission: codes
+    });
     const result = await user.save();
     ctx.body = {
       code: 0,

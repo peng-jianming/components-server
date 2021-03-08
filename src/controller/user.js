@@ -55,7 +55,7 @@ class UserController {
       data: {
         url: `${
           process.env.NODE_ENV === 'production'
-            ? 'http://8.129.90.25:3000/upload'
+            ? 'https://www.pengjianming.top/upload'
             : 'http://localhost:3000/upload'
         }/${basename}`
       }

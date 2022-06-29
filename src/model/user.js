@@ -6,8 +6,7 @@ const userSchema = new mongoose.Schema({
   __v: { type: Number, select: false },
   user_name: String,
   password: {
-    type: String,
-    select: false
+    type: String
   },
   email: String,
   avatar: {

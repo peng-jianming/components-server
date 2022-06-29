@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 class Socket {
   constructor(config) {
     this.config = {
-      port: 8080,
+      port: 1111,
       ...config
     };
     this.wss = {};

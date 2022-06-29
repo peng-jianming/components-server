@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 class Socket {
   constructor(config) {
     this.config = {
-      port: 1111,
+      port: 4444,
       ...config
     };
     this.wss = {};
@@ -16,7 +16,7 @@ class Socket {
     if (process.env.NODE_ENV === 'production') {
       const server = createServer();
       this.wss = new WebSocket.WebSocketServer({ server });
-      server.listen(1111);
+      server.listen(4444);
     } else {
       this.wss = new WebSocket.WebSocketServer(this.config);
     }

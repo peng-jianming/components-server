@@ -13,7 +13,7 @@ async function main(mailTitle, registerMail, html) {
     secure: false, // true for 465, false for other ports
     auth: {
       user: '728494186@qq.com', // generated ethereal user
-      pass: 'cybhzlkjlkhdbcjc' // generated ethereal password
+      pass: 'jirlfxetbqwkbehh' // generated ethereal password
     }
   });
 

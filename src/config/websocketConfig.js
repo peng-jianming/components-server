@@ -15,28 +15,27 @@ class Socket {
   }
 
   init() {
-    // if (process.env.NODE_ENV === 'production') {
-    //   // 线上采用的是https
-    //   const server = https.createServer({
-    //     cert: fs.readFileSync(
-    //       path.resolve(
-    //         __dirname,
-    //         './httpsConfig/5163307_www.pengjianming.top.pem'
-    //       )
-    //     ),
-    //     key: fs.readFileSync(
-    //       path.resolve(
-    //         __dirname,
-    //         './httpsConfig/5163307_www.pengjianming.top.key'
-    //       )
-    //     )
-    //   });
-    //   this.wss = new WebSocket.Server({ server });
-    //   server.listen(8080);
-    // } else {
-    //   this.wss = new WebSocket.Server(this.config);
-    // }
-    this.wss = new WebSocket.Server(this.config);
+    if (process.env.NODE_ENV === 'production') {
+      // 线上采用的是https
+      const server = https.createServer({
+        // cert: fs.readFileSync(
+        //   path.resolve(
+        //     __dirname,
+        //     './httpsConfig/5163307_www.pengjianming.top.pem'
+        //   )
+        // ),
+        // key: fs.readFileSync(
+        //   path.resolve(
+        //     __dirname,
+        //     './httpsConfig/5163307_www.pengjianming.top.key'
+        //   )
+        // )
+      });
+      this.wss = new WebSocket.Server({ server });
+      server.listen(8080);
+    } else {
+      this.wss = new WebSocket.Server(this.config);
+    }
     this.wss.on('connection', (ws) => {
       // 连接成功,开启心跳检测
       ws.isAlive = true;

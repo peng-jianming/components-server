@@ -1,4 +1,5 @@
-import WebSocket  from 'ws';
+import WebSocket from 'ws';
+import { createServer } from 'http';
 import jwt from 'jsonwebtoken';
 
 class Socket {
@@ -12,7 +13,13 @@ class Socket {
   }
 
   init() {
-    this.wss = new WebSocket.WebSocketServer(this.config);
+    if (process.env.NODE_ENV === 'production') {
+      const server = createServer();
+      this.wss = new WebSocket.WebSocketServer({ server });
+      server.listen(1111);
+    } else {
+      this.wss = new WebSocket.WebSocketServer(this.config);
+    }
     this.wss.on('connection', (ws) => {
       // 连接成功,开启心跳检测
       ws.isAlive = true;

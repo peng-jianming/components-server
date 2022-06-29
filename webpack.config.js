@@ -26,12 +26,6 @@ module.exports = {
           'thread-loader',
           { loader: 'babel-loader', options: { cacheDirectory: true } }
         ]
-      },
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['thread-loader', 'eslint-loader']
       }
     ]
   },
